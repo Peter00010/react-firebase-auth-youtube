@@ -1,10 +1,14 @@
+/* eslint-disable no-unused-vars */
 import FullPageLoader from '../components/FullPageLoader.jsx';
 import {useState} from 'react';
+import { auth } from '../firebase/config.js';
 
 
 function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [loginType, setLoginType] = useState('login');
+
+  console.log(auth);
 
   
     return (
