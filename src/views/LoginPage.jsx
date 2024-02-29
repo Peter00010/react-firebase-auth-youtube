@@ -8,14 +8,15 @@ function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [loginType, setLoginType] = useState("login");
   const [userCredentials, setUserCredentials] = useState();
+  const [error, setError] = useState("");
 
   const handleCredentials = (e) => {
     setUserCredentials({ ...userCredentials, [e.target.name]: e.target.value });
-    console.log(userCredentials);
   };
 
   const handleSignup = (e) => {
     e.preventDefault();
+    setError("");
 
     createUserWithEmailAndPassword(
       auth,
@@ -23,18 +24,10 @@ function LoginPage() {
       userCredentials.password
     )
       .then((userCredential) => {
-        // Signed up
         const user = userCredential.user;
-        console.log(user);
-        // ...
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode);
-        console.log(errorMessage);
-
-        // ..
+        setError(error.message);
       });
   };
 
@@ -95,6 +88,8 @@ function LoginPage() {
                 Sign Up
               </button>
             )}
+
+            {error && <div className="error">{error}</div>}
 
             <p className="forgot-password">Forgot Password?</p>
           </form>
