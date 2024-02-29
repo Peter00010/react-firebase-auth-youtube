@@ -6,13 +6,27 @@ import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
+  onAuthStateChanged,
 } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { setUser } from "../store/usersSlice.js";
 
 function LoginPage() {
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+
+  const [isLoading, setIsLoading] = useState(true);
   const [loginType, setLoginType] = useState("login");
   const [userCredentials, setUserCredentials] = useState();
   const [error, setError] = useState("");
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      dispatch(setUser({ id: user.user.uid, email: user.user.email }));
+    } else {
+      dispatch(setUser(null));
+    }
+    if(isLoading){setIsLoading(false)}
+  });
 
   const handleCredentials = (e) => {
     setUserCredentials({ ...userCredentials, [e.target.name]: e.target.value });
@@ -29,6 +43,12 @@ function LoginPage() {
     )
       .then((userCredential) => {
         console.log(userCredential.user);
+        dispatch(
+          setUser({
+            id: userCredential.user.uid,
+            email: userCredential.user.email,
+          })
+        );
       })
       .catch((error) => {
         setError(error.message);
@@ -43,13 +63,9 @@ function LoginPage() {
       auth,
       userCredentials.email,
       userCredentials.password
-    )
-      .then((userCredential) => {
-        console.log(userCredential.user);
-      })
-      .catch((error) => {
-        setError(error.message);
-      });
+    ).catch((error) => {
+      setError(error.message);
+    });
   };
 
   const handlePasswordReset = () => {
