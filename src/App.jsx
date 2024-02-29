@@ -11,16 +11,17 @@ function App() {
 
   return (
     <>
-    {user.currentUser ?
-      <BrowserRouter>
-        <Routes>
-          <Route index element={<BooksPage />} />
-          <Route path="add-book" element={<AddBookPage />} />
-          <Route path="book/:id" element={<SingleBookPage />} />
-        </Routes>
-      </BrowserRouter> : 
-      <LoginPage/>
-    }
+      {user.currentUser ? (
+        <BrowserRouter>
+          <Routes>
+            <Route index element={<BooksPage />} />
+            <Route path="add-book" element={<AddBookPage />} />
+            <Route path="book/:id" element={<SingleBookPage />} />
+          </Routes>
+        </BrowserRouter>
+      ) : (
+        <LoginPage />
+      )}
     </>
   );
 }

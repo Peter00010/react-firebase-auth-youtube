@@ -21,11 +21,13 @@ function LoginPage() {
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      dispatch(setUser({ id: user.user.uid, email: user.user.email }));
+      dispatch(setUser({ id: user.uid, email: user.email }));
     } else {
       dispatch(setUser(null));
     }
-    if(isLoading){setIsLoading(false)}
+    if (isLoading) {
+      setIsLoading(false);
+    }
   });
 
   const handleCredentials = (e) => {
