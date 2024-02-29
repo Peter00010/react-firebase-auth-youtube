@@ -2,7 +2,11 @@
 import FullPageLoader from "../components/FullPageLoader.jsx";
 import { useState } from "react";
 import { auth } from "../firebase/config.js";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 
 function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,11 +28,34 @@ function LoginPage() {
       userCredentials.password
     )
       .then((userCredential) => {
-        const user = userCredential.user;
+        console.log(userCredential.user);
       })
       .catch((error) => {
         setError(error.message);
       });
+  };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setError("");
+
+    signInWithEmailAndPassword(
+      auth,
+      userCredentials.email,
+      userCredentials.password
+    )
+      .then((userCredential) => {
+        console.log(userCredential.user);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  };
+
+  const handlePasswordReset = () => {
+    const email = prompt("Please enter your email");
+    sendPasswordResetEmail(auth, email);
+    alert("Email sent! Check your email for password reset instructions.");
   };
 
   return (
@@ -77,7 +104,14 @@ function LoginPage() {
               />
             </div>
             {loginType == "login" ? (
-              <button className="active btn btn-block">Login</button>
+              <button
+                onClick={(e) => {
+                  handleLogin(e);
+                }}
+                className="active btn btn-block"
+              >
+                Login
+              </button>
             ) : (
               <button
                 onClick={(e) => {
@@ -91,7 +125,9 @@ function LoginPage() {
 
             {error && <div className="error">{error}</div>}
 
-            <p className="forgot-password">Forgot Password?</p>
+            <p onClick={handlePasswordReset} className="forgot-password">
+              Forgot Password?
+            </p>
           </form>
         </section>
       </div>
